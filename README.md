@@ -42,10 +42,7 @@ After you have successfully created a virtual machine on OpenStack (MetaCentrum 
 ### Prerequisities
 
 Update the system and install prerequisities:
-* `sudo apt update && sudo apt -y upgrade`
-* git, curl, and screen should be already installed
-* `sudo apt install make`
-* `sudo apt install -y openjdk-11-jre-headless`
+* run `./init.sh`
 
 ### Config files
 
