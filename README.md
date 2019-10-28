@@ -51,6 +51,16 @@ Update the system and install prerequisities:
 
 Followes https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
 
+### Clone this repo
+
+`git clone https://gitlab.fi.muni.cz/xluptak4/pv177-log-collection-and-analysis.git`
+
+and then
+```
+Username for 'https://gitlab.fi.muni.cz': <xlogin>
+Password for 'https://<xlogin>@gitlab.fi.muni.cz': <secondary password>
+```
+
 ### Spin it up
 
 See commented [Makefile](../Makefile) for the workflow. Then you only need to run `make`.
