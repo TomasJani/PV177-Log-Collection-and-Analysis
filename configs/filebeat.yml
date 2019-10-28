@@ -27,7 +27,7 @@ filebeat.inputs:
   paths:
     #- /var/log/*.log
     #- c:\programdata\elasticsearch\logs\*
-    - ../logstash-tutorial.log
+    - /home/ubuntu/pv177-log-collection-and-analysis/logstash-tutorial.log
 
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
   # matching any regular expression from the list.
