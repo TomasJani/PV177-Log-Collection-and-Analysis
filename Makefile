@@ -73,7 +73,7 @@ logstash-tutorial.log:
 # Clean the workspace to start again
 clean:
 	# Kill all screens
-	pkill screen
+	-pkill screen
 	# Sometimes Logstash is not properly shutted down
 	-kill -9 `pgrep -f logstash`
 	# Sometimes Filebeat should be forced to read the logs again from scratch by deleting its registry
