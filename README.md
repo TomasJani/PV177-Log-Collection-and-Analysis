@@ -39,15 +39,6 @@ Connect via SSH:
 
 After you have successfully created a virtual machine on OpenStack (MetaCentrum Cloud), let's setup ELK Stack.
 
-### Prerequisities
-
-Update the system and install prerequisities:
-* run `./init.sh`
-
-### Config files
-
-Followes https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
-
 ### Clone this repo
 
 `git clone https://gitlab.fi.muni.cz/xluptak4/pv177-log-collection-and-analysis.git`
@@ -57,6 +48,15 @@ and then
 Username for 'https://gitlab.fi.muni.cz': <xlogin>
 Password for 'https://<xlogin>@gitlab.fi.muni.cz': <secondary password>
 ```
+
+### Prerequisities
+
+Update the system and install prerequisities:
+* run `./init.sh` (file [init.sh](../init.sh) in this repo)
+
+### Config files
+
+Followes https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
 
 ### Spin it up
 
