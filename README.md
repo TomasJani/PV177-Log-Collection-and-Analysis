@@ -75,7 +75,7 @@ Press "Ctrl-A" and "D" in the attached screen.
 
 ### Indexing Logs
 Create logs directory in your VM:
-* mkdir ~/pv177-log-collection-and-analysis/logs 
+* `mkdir ~/pv177-log-collection-and-analysis/logs`
 
 Copy logs via SCP (run this command from your computer, not VM, ensure that your instances are started in openstack):
 * `scp -i <your-keypair-private-key.pem> /var/log/*.log  ubuntu@<ip-of-your-instance>:~/pv177-log-collection-and-analysis/logs` 
