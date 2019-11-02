@@ -73,6 +73,18 @@ Re-attach the screen:
 Detach screen:
 Press "Ctrl-A" and "D" in the attached screen.
 
+### Indexing Logs
+Create logs directory in your VM:
+* mkdir ~/pv177-log-collection-and-analysis/logs 
+
+Copy logs via SCP (run this command from your computer, not VM, ensure that your instances are started in openstack):
+* `scp -i <your-keypair-private-key.pem> /var/log/*.log  ubuntu@<ip-of-your-instance>:~/pv177-log-collection-and-analysis/logs` 
+
+Add this line to `pv177-log-collection-and-analysis/configs/filebeat.yml` , to paths
+* `/home/ubuntu/pv177-log-collection-and-analysis/logs/*.log`
+
+* Rerun ELK stack with `make`
+
 ### Hints
 
 To check if Elasticsearch is running, run `curl localhost:9200`.
