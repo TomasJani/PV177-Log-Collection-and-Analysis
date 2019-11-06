@@ -58,6 +58,19 @@ Update the system and install prerequisities:
 
 Followes https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
 
+### Allow access to Kibana from remote
+
+Enable port 5601 in Openstack: `Network -> Security Groups -> <your-security-group> -> Manage Rules -> Add rule`
+
+* Rule: Custom TCP Rule
+* Description: Kibana
+* Direction: Ingress
+* Open Port: Port
+* Port: 5601
+* Remote: CIDR
+* CIDR: 0.0.0.0/0
+* Ether Type: IPv4
+
 ### Spin it up
 
 See commented [Makefile](../Makefile) for the workflow. Then you only need to run `make`.

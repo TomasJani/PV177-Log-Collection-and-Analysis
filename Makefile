@@ -53,6 +53,7 @@ filebeat-install: logstash-install
 init-configs: logstash-install filebeat-install logstash-tutorial.log
 	cp -f configs/filebeat.yml ${FILEBEAT}/filebeat.yml
 	cp -f configs/logstash.conf ${LOGSTASH}/logstash.conf
+	cp -f configs/kibana.yml ${KIBANA}/config/kibana.yml
 
 # Spin it up, use separate screen for every component
 startup: init-configs clean
@@ -63,6 +64,7 @@ startup: init-configs clean
 	# Start Logstash with automatic config reloading
 	screen -S Lnode -d -m ${LOGSTASH}/bin/logstash -f ${LOGSTASH}/logstash.conf # --config.reload.automatic
 	screen -S Fnode -d -m ${FILEBEAT}/filebeat -e -c ${FILEBEAT}/filebeat.yml -d "publish"
+	screen -S Knode -d -m ${KIBANA}/bin/kibana
 	# List available screens
 	screen -ls
 
