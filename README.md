@@ -74,16 +74,19 @@ Detach screen:
 Press "Ctrl-A" and "D" in the attached screen.
 
 ### Indexing Logs
-Create logs directory in your VM:
-* `mkdir ~/pv177-log-collection-and-analysis/logs`
 
-Copy logs via SCP (run this command from your computer, not VM, ensure that your instances are started in openstack):
-* `scp -i <your-keypair-private-key.pem> /var/log/*.log  ubuntu@<ip-of-your-instance>:~/pv177-log-collection-and-analysis/logs` 
+* Install filebeats locally on your computer
 
-Add this line to `pv177-log-collection-and-analysis/configs/filebeat.yml` , to paths
-* `/home/ubuntu/pv177-log-collection-and-analysis/logs/*.log`
+* In your local `filebeat.yml` set: 
+   * `paths` to `/var/log/*.log`
+   * `hosts` in output.logstash to `["<instanceIp>:5044"]` (comment out output.elasticsearch)
+   * `enabled` in inputs to `true`
 
-* Rerun ELK stack with `make`
+* In openstack enable port `5044` for `tcp` connections in `Network->Security Groups -> Manage Rules -> Add rule`
+
+* Run filebeats on local machine and elk stack on remote
+
+* To check if logging is running correctly : `curl -XGET 'localhost:9200/<logstash-index-name>/_search?pretty&q=*:*'`
 
 ### Hints
 
