@@ -1,5 +1,5 @@
-# This Makefile downloads ELK Stack components
-# and spins them up.
+# This Makefile downloads and spins Filebeat up
+# on the client side to ship data to ELK server.
 
 # Define variables
 ELASTIC-VERSION = 7.4.1
