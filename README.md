@@ -86,6 +86,9 @@ Re-attach the screen:
 Detach screen:
 Press "Ctrl-A" and "D" in the attached screen.
 
+Scrolling in the attached screen:
+Press "Ctrl-A" and "Esc" in the attached screen.
+
 ### Indexing Logs
 
 * Install filebeats locally on your computer
