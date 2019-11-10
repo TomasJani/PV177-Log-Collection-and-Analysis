@@ -104,6 +104,11 @@ Press "Ctrl-A" and "Esc" in the attached screen.
 
 * To check if logging is running correctly : `curl -XGET 'localhost:9200/<logstash-index-name>/_search?pretty&q=*:*'`
 
+NB: you can `cd` into client dir and use the Makefile, target `make
+startup-filebeat`. To include VM public IP at the execution time, you can use
+`make PUBLIC-IP=78.128.250.147 startup-filebeat`, with `78.128.250.147` as an
+example.
+
 ### Hints
 
 To check if Elasticsearch is running, run `curl localhost:9200`.
