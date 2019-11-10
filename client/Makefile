@@ -16,6 +16,9 @@ LOGSTASH-URL = ${ELASTIC-DOWNLOAD-PREFIX}/logstash/${LOGSTASH}.tar.gz
 KIBANA-URL = ${ELASTIC-DOWNLOAD-PREFIX}/kibana/${KIBANA}.tar.gz
 FILEBEAT-URL = ${ELASTIC-DOWNLOAD-PREFIX}/beats/filebeat/${FILEBEAT}.tar.gz
 
+# Public IP of the ELK server (Openstack VM)
+PUBLIC-IP = 78.128.250.N
+
 SHELL=/bin/bash
 
 # Define fake targets
@@ -31,6 +34,8 @@ filebeat-install:
 
 startup-filebeat: filebeat-install
 	cp -f configs/filebeat.yml ${FILEBEAT}/filebeat.yml
+	# Replace localhost with the live ELK server
+	sed -i 's/localhost:5044/${PUBLIC-IP}:5044/g' ${FILEBEAT}/filebeat.yml
 	screen -S Fnode -L -Logfile screen-logs/fnode.log -d -m ${FILEBEAT}/filebeat -e -c ${FILEBEAT}/filebeat.yml -d "publish"
 	# List available screens
 	screen -ls
