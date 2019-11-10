@@ -58,13 +58,13 @@ init-configs: logstash-install filebeat-install logstash-tutorial.log
 # Spin it up, use separate screen for every component
 startup: init-configs clean
 	# Create and detach screen with name 'ESnode' for Elasticsearch
-	screen -S ESnode -L -Logfile esnode.log -d -m ${ELASTICSEARCH-EXTRACTED}/bin/elasticsearch
+	screen -S ESnode -L -Logfile screen-logs/esnode.log -d -m ${ELASTICSEARCH-EXTRACTED}/bin/elasticsearch
 	# Check the Logstash config file
 	${LOGSTASH}/bin/logstash -f ${LOGSTASH}/logstash.conf --config.test_and_exit
 	# Start Logstash with automatic config reloading
-	screen -S Lnode -L -Logfile lnode.log -d -m ${LOGSTASH}/bin/logstash -f ${LOGSTASH}/logstash.conf # --config.reload.automatic
-	screen -S Fnode -L -Logfile fnode.log -d -m ${FILEBEAT}/filebeat -e -c ${FILEBEAT}/filebeat.yml -d "publish"
-	screen -S Knode -L -Logfile knode.log -d -m ${KIBANA}/bin/kibana
+	screen -S Lnode -L -Logfile screen-logs/lnode.log -d -m ${LOGSTASH}/bin/logstash -f ${LOGSTASH}/logstash.conf # --config.reload.automatic
+	screen -S Fnode -L -Logfile screen-logs/fnode.log -d -m ${FILEBEAT}/filebeat -e -c ${FILEBEAT}/filebeat.yml -d "publish"
+	screen -S Knode -L -Logfile screen-logs/knode.log -d -m ${KIBANA}/bin/kibana
 	# List available screens
 	screen -ls
 
