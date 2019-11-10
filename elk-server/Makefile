@@ -19,7 +19,7 @@ FILEBEAT-URL = ${ELASTIC-DOWNLOAD-PREFIX}/beats/filebeat/${FILEBEAT}.tar.gz
 SHELL=/bin/bash
 
 # Define fake targets
-.PHONY: all startup-elasticsearch startup-logstash startup-filebeat startup-kibana startup-all clean
+.PHONY: all config-elasticsearch startup-elasticsearch startup-logstash startup-filebeat startup-kibana startup-all clean
 
 # Define targets
 all: elasticsearch-install logstash-install kibana-install filebeat-install startup-all
@@ -49,7 +49,28 @@ filebeat-install:
 	curl --location ${FILEBEAT-URL} | tar xzv
 	touch $@
 
-startup-elasticsearch: elasticsearch-install
+config-elasticsearch:
+	# Based on https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
+	# May consult `ulimit -a` for the current limit values
+	# Increase file descriptor limits (number of open files)
+	# Default 1024 on ubuntu
+	ulimit -n 65536
+	# Alternatively
+	# sudo su -c 'printf "# ELK Setup\n* soft nofile 65536\n* hard nofile 65536\n" >> /etc/security/limits.conf'
+	# Disable swapping
+	# May consult `less /proc/meminfo | grep -i swap`
+	sudo swapoff -a
+	# Number of threads should be at least 4096
+	# Default 15677 on ubuntu
+	# ulimit -n 4096
+	# Alternatively
+	# sudo su -c 'printf "# ELK Setup\n* soft nproc 4096\n* hard nproc 4096\n" >> /etc/security/limits.conf'
+	#
+	# Heap size https://www.elastic.co/guide/en/elasticsearch/reference/current/heap-size.html
+	# Default 1GB, depends on the current amount of RAM
+	# May be changed in config ${ELASTICSEARCH-EXTRACTED}/config/jvm.options
+
+startup-elasticsearch: elasticsearch-install config-elasticsearch
 	# Create and detach screen with name 'ESnode' for Elasticsearch
 	# and log `screen` stdout to the log file
 	screen -S ESnode -L -Logfile screen-logs/esnode.log -d -m ${ELASTICSEARCH-EXTRACTED}/bin/elasticsearch
