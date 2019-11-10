@@ -19,10 +19,10 @@ FILEBEAT-URL = ${ELASTIC-DOWNLOAD-PREFIX}/beats/filebeat/${FILEBEAT}.tar.gz
 SHELL=/bin/bash
 
 # Define fake targets
-.PHONY: all init-configs startup clean
+.PHONY: all startup-elasticsearch startup-logstash startup-filebeat startup-kibana startup-all clean
 
 # Define targets
-all: elasticsearch-install logstash-install kibana-install filebeat-install init-configs startup
+all: elasticsearch-install logstash-install kibana-install filebeat-install startup-all
 
 elasticsearch-install:
 	# Print to the stdout what's going on
@@ -44,27 +44,34 @@ kibana-install:
 	curl --location ${KIBANA-URL} | tar xzv
 	touch $@
 
-filebeat-install: logstash-install
+filebeat-install:
 	@echo '## Downloading Filebeat'
 	curl --location ${FILEBEAT-URL} | tar xzv
 	touch $@
 
-# Initialize Logstash and Filebeat with the given configurations
-init-configs: logstash-install filebeat-install logstash-tutorial.log
-	cp -f configs/filebeat.yml ${FILEBEAT}/filebeat.yml
-	cp -f configs/logstash.conf ${LOGSTASH}/logstash.conf
-	cp -f configs/kibana.yml ${KIBANA}/config/kibana.yml
-
-# Spin it up, use separate screen for every component
-startup: init-configs clean
+startup-elasticsearch: elasticsearch-install
 	# Create and detach screen with name 'ESnode' for Elasticsearch
+	# and log `screen` stdout to the log file
 	screen -S ESnode -L -Logfile screen-logs/esnode.log -d -m ${ELASTICSEARCH-EXTRACTED}/bin/elasticsearch
-	# Check the Logstash config file
+
+startup-logstash: logstash-install
+	# Initialize Logstash with the given configuration
+	cp -f configs/logstash.conf ${LOGSTASH}/logstash.conf
+	# Check the Logstash config file for valid syntax and then exit
 	${LOGSTASH}/bin/logstash -f ${LOGSTASH}/logstash.conf --config.test_and_exit
 	# Start Logstash with automatic config reloading
 	screen -S Lnode -L -Logfile screen-logs/lnode.log -d -m ${LOGSTASH}/bin/logstash -f ${LOGSTASH}/logstash.conf # --config.reload.automatic
+
+startup-filebeat: filebeat-install logstash-tutorial.log
+	cp -f configs/filebeat.yml ${FILEBEAT}/filebeat.yml
 	screen -S Fnode -L -Logfile screen-logs/fnode.log -d -m ${FILEBEAT}/filebeat -e -c ${FILEBEAT}/filebeat.yml -d "publish"
+
+startup-kibana: kibana-install
+	cp -f configs/kibana.yml ${KIBANA}/config/kibana.yml
 	screen -S Knode -L -Logfile screen-logs/knode.log -d -m ${KIBANA}/bin/kibana
+
+# Spin it up, use separate screen for every component
+startup-all: clean startup-elasticsearch startup-logstash startup-filebeat startup-kibana
 	# List available screens
 	screen -ls
 
