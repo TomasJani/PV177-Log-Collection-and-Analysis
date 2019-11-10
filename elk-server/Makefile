@@ -107,4 +107,4 @@ clean:
 	# Sometimes Logstash is not properly shutted down
 	-kill -9 `pgrep -f logstash`
 	# Sometimes Filebeat should be forced to read the logs again from scratch by deleting its registry
-	-rm -rf filebeat-7.4.1-linux-x86_64/data/registry
+	-rm -rf ${FILEBEAT}/data/registry
