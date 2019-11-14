@@ -20,11 +20,18 @@
 #
 # Use a descriptive name for the node:
 #
-#node.name: node-1
+#
+node.name: data-01
 #
 # Add custom attributes to the node:
 #
 #node.attr.rack: r1
+node.master: false
+node.voting_only: false
+node.data: true
+node.ingest: false
+node.ml: false
+cluster.remote.connect: false
 #
 # ----------------------------------- Paths ------------------------------------
 #
@@ -52,7 +59,7 @@
 #
 # Set the bind address to a specific IP (IPv4 or IPv6):
 #
-#network.host: 192.168.0.1
+network.host: [_local_, _site_]
 #
 # Set a custom port for HTTP:
 #
@@ -65,11 +72,11 @@
 # Pass an initial list of hosts to perform discovery when this node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-#discovery.seed_hosts: ["host1", "host2"]
+discovery.seed_hosts: ["172.16.1.103"]
 #
 # Bootstrap the cluster using an initial set of master-eligible nodes:
 #
-#cluster.initial_master_nodes: ["node-1", "node-2"]
+cluster.initial_master_nodes: ["master"]
 #
 # For more information, consult the discovery and cluster formation module documentation.
 #
