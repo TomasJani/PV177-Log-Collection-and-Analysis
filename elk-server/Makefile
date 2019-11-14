@@ -69,6 +69,8 @@ config-elasticsearch:
 	# Heap size https://www.elastic.co/guide/en/elasticsearch/reference/current/heap-size.html
 	# Default 1GB, depends on the current amount of RAM
 	# May be changed in config ${ELASTICSEARCH-EXTRACTED}/config/jvm.options
+	# Virtual memory https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+	sudo sysctl -w vm.max_map_count=262144
 
 startup-elasticsearch: elasticsearch-install config-elasticsearch
 	# Create and detach screen with name 'ESnode' for Elasticsearch
