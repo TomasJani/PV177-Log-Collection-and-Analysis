@@ -1,5 +1,5 @@
-# This Makefile downloads ELK Stack components
-# and spins them up on the server side.
+# This Makefile downloads Elastic Stack components,
+# configures them, spins them up and ships data between them.
 
 # Define variables
 ELASTIC-VERSION = 7.4.1
@@ -16,10 +16,15 @@ LOGSTASH-URL = ${ELASTIC-DOWNLOAD-PREFIX}/logstash/${LOGSTASH}.tar.gz
 KIBANA-URL = ${ELASTIC-DOWNLOAD-PREFIX}/kibana/${KIBANA}.tar.gz
 FILEBEAT-URL = ${ELASTIC-DOWNLOAD-PREFIX}/beats/filebeat/${FILEBEAT}.tar.gz
 
+# Public IP of the ELK server (Openstack VM)
+# Use localhost as a fallback
+PUBLIC-IP = localhost
+# PUBLIC-IP = 78.128.250.N
+
 SHELL=/bin/bash
 
 # Define fake targets
-.PHONY: all config-elasticsearch startup-elasticsearch startup-logstash startup-filebeat startup-kibana startup-all clean
+.PHONY: all config-elasticsearch startup-elasticsearch startup-logstash startup-filebeat startup-kibana startup-all stop-filebeat clean
 
 # Define targets
 all: elasticsearch-install logstash-install kibana-install filebeat-install startup-all
@@ -87,6 +92,8 @@ startup-logstash: logstash-install
 
 startup-filebeat: filebeat-install logstash-tutorial.log
 	cp -f configs/filebeat.yml ${FILEBEAT}/filebeat.yml
+	# Replace localhost with the live ELK server
+	sed -i 's/localhost:5044/${PUBLIC-IP}:5044/g' ${FILEBEAT}/filebeat.yml
 	screen -S Fnode -L -Logfile screen-logs/fnode.log -d -m ${FILEBEAT}/filebeat -e -c ${FILEBEAT}/filebeat.yml -d "publish"
 
 startup-kibana: kibana-install
@@ -97,6 +104,11 @@ startup-kibana: kibana-install
 startup-all: clean startup-elasticsearch startup-logstash startup-filebeat startup-kibana
 	# List available screens
 	screen -ls
+
+stop-filebeat:
+	@screen -X -S Fnode kill
+	# List available screens
+	-screen -ls
 
 # Download and unpack sample data provided by Elastic
 logstash-tutorial.log:
