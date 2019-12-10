@@ -10,11 +10,13 @@ ELASTICSEARCH = ${ELASTICSEARCH-EXTRACTED}-linux-x86_64
 LOGSTASH = logstash-${ELASTIC-VERSION}
 KIBANA = kibana-${ELASTIC-VERSION}-linux-x86_64
 FILEBEAT = filebeat-${ELASTIC-VERSION}-linux-x86_64
+METRICBEAT = metricbeat-${ELASTIC-VERSION}-linux-x86_64
 
 ELASTICSEARCH-URL = ${ELASTIC-DOWNLOAD-PREFIX}/elasticsearch/${ELASTICSEARCH}.tar.gz
 LOGSTASH-URL = ${ELASTIC-DOWNLOAD-PREFIX}/logstash/${LOGSTASH}.tar.gz
 KIBANA-URL = ${ELASTIC-DOWNLOAD-PREFIX}/kibana/${KIBANA}.tar.gz
 FILEBEAT-URL = ${ELASTIC-DOWNLOAD-PREFIX}/beats/filebeat/${FILEBEAT}.tar.gz
+METRICBEAT-URL = ${ELASTIC-DOWNLOAD-PREFIX}/beats/metricbeat/${METRICBEAT}.tar.gz
 
 # Public IP of the ELK server (Openstack VM)
 # Use localhost as a fallback
@@ -24,10 +26,10 @@ PUBLIC-IP = localhost
 SHELL=/bin/bash
 
 # Define fake targets
-.PHONY: all config-elasticsearch startup-elasticsearch startup-logstash startup-filebeat startup-kibana startup-all stop-filebeat clean
+.PHONY: all config-elasticsearch startup-elasticsearch startup-logstash startup-filebeat startup-metricbeat startup-kibana startup-all stop-filebeat clean
 
 # Define targets
-all: elasticsearch-install logstash-install kibana-install filebeat-install startup-all
+all: elasticsearch-install logstash-install kibana-install filebeat-install metricbeat-install startup-all
 
 elasticsearch-install:
 	# Print to the stdout what's going on
@@ -52,6 +54,11 @@ kibana-install:
 filebeat-install:
 	@echo '## Downloading Filebeat'
 	curl --location ${FILEBEAT-URL} | tar xzv
+	touch $@
+
+metricbeat-install:
+	@echo '## Downloading Metricbeat'
+	curl --location ${METRICBEAT-URL} | tar xzv
 	touch $@
 
 config-elasticsearch:
@@ -96,12 +103,16 @@ startup-filebeat: filebeat-install logstash-tutorial.log
 	sed -i 's/localhost:5044/${PUBLIC-IP}:5044/g' ${FILEBEAT}/filebeat.yml
 	screen -S Fnode -L -Logfile screen-logs/fnode.log -d -m ${FILEBEAT}/filebeat -e -c ${FILEBEAT}/filebeat.yml -d "publish"
 
+startup-metricbeat: metricbeat-install
+	# cp -f configs/metricbeat.yml ${METRICBEAT}/metricbeat.yml
+	screen -S Mnode -L -Logfile screen-logs/mnode.log -d -m ${METRICBEAT}/metricbeat -e -c ${METRICBEAT}/metricbeat.yml
+
 startup-kibana: kibana-install
 	cp -f configs/kibana.yml ${KIBANA}/config/kibana.yml
 	screen -S Knode -L -Logfile screen-logs/knode.log -d -m ${KIBANA}/bin/kibana
 
 # Spin it up, use separate screen for every component
-startup-all: clean startup-elasticsearch startup-logstash startup-filebeat startup-kibana
+startup-all: clean startup-elasticsearch startup-logstash startup-filebeat startup-kibana startup-metricbeat
 	# List available screens
 	screen -ls
 
