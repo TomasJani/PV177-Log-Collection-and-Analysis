@@ -109,6 +109,26 @@ startup-filebeat`. To include VM public IP at the execution time, you can use
 `make PUBLIC-IP=78.128.250.147 startup-filebeat`, with `78.128.250.147` as an
 example.
 
+### Cluster
+* https://logz.io/blog/elasticsearch-cluster-tutorial/
+
+In openstack enable port `9300` for `tcp` (bouth ingress and egress) connections in `Network->Security Groups -> Manage Rules -> Add rule` 
+
+Cluster consist of `master` and `data` nodes. Only difference in configuretion is in config file `elasticsearch.yml`
+* https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html
+
+Nodes are configurated in  elastic-stack\configs\elasticsearch-master.yml and elastic-stack\configs\elasticsearch-data.yml 
+* https://gitlab.fi.muni.cz/xluptak4/pv177-log-collection-and-analysis/blob/master/elastic-stack/configs/elasticsearch-master.yml 
+* https://gitlab.fi.muni.cz/xluptak4/pv177-log-collection-and-analysis/blob/master/elastic-stack/configs/elasticsearch-data.yml
+
+###### Config Explanation
+
+network.host: `[_local_, _site_]`
+
+`_local_` and `_site_` represents network in which data nodes are finding master nodes
+
+discovery.seed_hosts: `[master node private addresses]`
+
 ### Hints
 
 To check if Elasticsearch is running, run `curl localhost:9200`.
