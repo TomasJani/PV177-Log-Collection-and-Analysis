@@ -164,7 +164,7 @@ network.host: [_local_, _site_]
 discovery.seed_hosts: [<master node private addresses>]
 ```
 
-### Security [NYI]
+### Security [NIY]
 
 Security for Elasticsearch is now free (since May 2019) https://www.elastic.co/blog/security-for-elasticsearch-is-now-free.
 
