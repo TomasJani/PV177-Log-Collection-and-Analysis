@@ -37,7 +37,7 @@ Connect via SSH:
 
 ## ELK Stack Setup
 
-After you have successfully created a virtual machine on OpenStack (MetaCentrum Cloud), let's setup ELK Stack.
+After you have successfully created a virtual machine on OpenStack (MetaCentrum Cloud), let's set up ELK Stack.
 
 ### Clone this repo
 
@@ -56,7 +56,7 @@ Update the system and install prerequisities:
 
 ### Config files
 
-Followes https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
+Follows https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
 
 ### Allow access to Kibana from remote
 
@@ -91,7 +91,7 @@ Press "Ctrl-A" and "Esc" in the attached screen.
 
 ### Indexing Logs
 
-* Install filebeats locally on your computer
+* Install Filebeat locally on your computer
 
 * In your local `filebeat.yml` set: 
    * `paths` to `/var/log/*.log`
@@ -100,7 +100,7 @@ Press "Ctrl-A" and "Esc" in the attached screen.
 
 * In openstack enable port `5044` for `tcp` connections in `Network->Security Groups -> Manage Rules -> Add rule`
 
-* Run filebeats on local machine and elk stack on remote
+* Run Filebeat on the local machine and elk stack on remote
 
 * To check if logging is running correctly : `curl -XGET 'localhost:9200/<logstash-index-name>/_search?pretty&q=*:*'`
 
@@ -110,22 +110,23 @@ startup-filebeat`. To include VM public IP at the execution time, you can use
 example.
 
 ### Cluster
+
 * https://logz.io/blog/elasticsearch-cluster-tutorial/
 
 In openstack enable port `9300` for `tcp` (bouth ingress and egress) connections in `Network->Security Groups -> Manage Rules -> Add rule` 
 
-Cluster consist of `master` and `data` nodes. Only difference in configuretion is in config file `elasticsearch.yml`
+A cluster consists of `master` and `data` nodes. The only difference between these two types of nodes is in their configuration files `elasticsearch.yml`.
 * https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html
 
 Nodes are configurated in  elastic-stack\configs\elasticsearch-master.yml and elastic-stack\configs\elasticsearch-data.yml 
-* https://gitlab.fi.muni.cz/xluptak4/pv177-log-collection-and-analysis/blob/master/elastic-stack/configs/elasticsearch-master.yml 
-* https://gitlab.fi.muni.cz/xluptak4/pv177-log-collection-and-analysis/blob/master/elastic-stack/configs/elasticsearch-data.yml
+* [elastic-stack/configs/elasticsearch-master.yml](../elastic-stack/configs/elasticsearch-master.yml)
+* [elastic-stack/configs/elasticsearch-data.yml](../elastic-stack/configs/elasticsearch-data.yml)
 
 ###### Config Explanation
 
 network.host: `[_local_, _site_]`
 
-`_local_` and `_site_` represents network in which data nodes are finding master nodes
+`_local_` and `_site_` represents the network in which data nodes are finding master nodes.
 
 discovery.seed_hosts: `[master node private addresses]`
 
@@ -137,4 +138,4 @@ To check if Elasticsearch indexed sample data, run `curl -XGET 'localhost:9200/<
 
 Always terminate the instance in OpenStack (policies).
 
-Create snapshot to persist state of your VM.
+Create a snapshot to persist the state of your VM.
