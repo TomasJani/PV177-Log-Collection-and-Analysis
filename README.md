@@ -1,6 +1,11 @@
 # PV177 Log Collection and Analysis
 
-Log Collection and Analysis project for the course PV177 Data Science in semester Fall 2019.
+Synopsis: Log Collection and Analysis project for the course PV177 Data Science
+in semester Fall 2019.
+
+The goal of this project is to run Elastic Stack as a server in OpenStack that
+collect data from Filebeat or Metricbeat running on the host machines and analyze
+this data using Kibana.
 
 ## MetaCentrum Account Setup
 
@@ -37,7 +42,8 @@ Connect via SSH:
 
 ## ELK Stack Setup
 
-After you have successfully created a virtual machine on OpenStack (MetaCentrum Cloud), let's set up ELK Stack.
+After you have successfully created a virtual machine on OpenStack (MetaCentrum
+Cloud), let's set up ELK Stack.
 
 ### Clone this repo
 
@@ -56,7 +62,10 @@ Update the system and install prerequisities:
 
 ### Config files
 
-Follows https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html
+For some default configuration, we followed the official getting started guide
+available at https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html.
+The configuration files are in [elastic-stack/configs](../elastic-stack/configs)
+directory.
 
 ### Allow access to Kibana from remote
 
@@ -73,17 +82,25 @@ Enable port 5601 in Openstack, `Network -> Security Groups -> <your-security-gro
 | CIDR: | 0.0.0.0/0 |
 | Ether Type: | IPv4 |
 
+Now you will be able to access Kibana in your favorite web browser by pointing to
+the allocated floating (public) IP address.
+
 ### Spin it up
 
-See commented [Makefile](../elastic-stack/Makefile) for the workflow. Then you only need to run `make`.
+See commented [Makefile](../elastic-stack/Makefile) for the workflow. Then you
+only need to run `make` to spin the server part up (runs all targets), or e.g.
+`make startup-filebeat` to spin up only Filebeat on the host side.
 
 ### Using screens
+
+Elastic Stack components (Elasticsearch, Logstash, Kibana, and possibly also
+Filebeat and Metricbeat) run in separate consoles (so-called screens) on the server.
 
 List all screens:
 `screen -ls`
 
 Re-attach the screen:
-`screen -r <screen-name>`, screen name: `ESnode`, `Lnode`, `Fnode`
+`screen -r <screen-name>`, screen name: `ESnode`, `Lnode`, `Fnode`, `Knode` or `Mnode`.
 
 Detach screen:
 Press "Ctrl-A" and "D" in the attached screen.
@@ -93,44 +110,59 @@ Press "Ctrl-A" and "Esc" in the attached screen.
 
 ### Indexing Logs
 
-* Install Filebeat locally on your computer
+The following step-by-step guide is provided for the clarity (everything is
+already included in the Makefile).
 
-* In your local `filebeat.yml` set: 
+1. Install Filebeat locally on your computer
+
+2. In your local `filebeat.yml`, set the following:
    * `paths` to `/var/log/*.log`
    * `hosts` in output.logstash to `["<instanceIp>:5044"]` (comment out output.elasticsearch)
    * `enabled` in inputs to `true`
 
-* In openstack enable port `5044` for `tcp` connections in `Network->Security Groups -> Manage Rules -> Add rule`
+3. Enable port `5044` for `tcp` connections in OpenStack in `Network -> Security
+  Groups -> <your-security-group> -> Manage Rules -> Add rule` (see [Allow access
+  to Kibana from remote section](#allow-access-to-kibana-from-remote)) for more details.
 
-* Run Filebeat on the local machine and elk stack on remote
+4. Run Filebeat on the local machine and Elastic Stack on remote.
 
-* To check if logging is running correctly : `curl -XGET 'localhost:9200/<logstash-index-name>/_search?pretty&q=*:*'`
+5. To check if logging is running correctly: `curl -XGET 'localhost:9200/<logstash-index-name>/_search?pretty&q=*:*'`
 
-NB: you can `cd` into client dir and use the Makefile, target `make
+NB: you can `cd` into elastic-stack dir and use the Makefile, target `make
 startup-filebeat`. To include VM public IP at the execution time, you can use
 `make PUBLIC-IP=78.128.250.147 startup-filebeat`, with `78.128.250.147` as an
 example.
 
 ### Cluster
 
-* https://logz.io/blog/elasticsearch-cluster-tutorial/
+We followed this tutorial https://logz.io/blog/elasticsearch-cluster-tutorial/.
 
-In openstack enable port `9300` for `tcp` (bouth ingress and egress) connections in `Network->Security Groups -> Manage Rules -> Add rule` 
+Enable port `9300` for `tcp` (bouth ingress and egress) connections in OpenStack
+in `Network -> Security Groups -> <your-security-group> -> Manage Rules -> Add rule`
+(see [Allow access to Kibana from remote section](#allow-access-to-kibana-from-remote))
+for more details.
 
-A cluster consists of `master` and `data` nodes. The only difference between these two types of nodes is in their configuration files `elasticsearch.yml`.
-* https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html
+A cluster consists of `master` and `data` nodes. The only difference between
+these two types of nodes is in their configuration files `elasticsearch.yml`.
 
-Nodes are configurated in  elastic-stack\configs\elasticsearch-master.yml and elastic-stack\configs\elasticsearch-data.yml 
+Ref.: https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html
+
+Node configurations are in `elasticsearch-master.yml` and `elasticsearch-data.yml`
+files:
 * [elastic-stack/configs/elasticsearch-master.yml](../elastic-stack/configs/elasticsearch-master.yml)
 * [elastic-stack/configs/elasticsearch-data.yml](../elastic-stack/configs/elasticsearch-data.yml)
 
 ###### Config Explanation
 
-network.host: `[_local_, _site_]`
+```
+network.host: [_local_, _site_]
+```
 
-`_local_` and `_site_` represents the network in which data nodes are finding master nodes.
+`_local_` and `_site_` represent the network in which data nodes are finding master nodes.
 
-discovery.seed_hosts: `[master node private addresses]`
+```
+discovery.seed_hosts: [<master node private addresses>]
+```
 
 ### Hints
 
