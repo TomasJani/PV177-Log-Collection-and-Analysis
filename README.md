@@ -164,6 +164,14 @@ network.host: [_local_, _site_]
 discovery.seed_hosts: [<master node private addresses>]
 ```
 
+### Security [NYI]
+
+Security for Elasticsearch is now free (since May 2019) https://www.elastic.co/blog/security-for-elasticsearch-is-now-free.
+
+Getting started with Elasticsearch security https://www.elastic.co/blog/getting-started-with-elasticsearch-security.
+
+Documentation for Elastic Stack security https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html.
+
 ### Hints
 
 To check if Elasticsearch is running, run `curl localhost:9200`.
