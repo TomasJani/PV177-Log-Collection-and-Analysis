@@ -170,6 +170,8 @@ Security for Elasticsearch is now free (since May 2019) https://www.elastic.co/b
 
 Getting started with Elasticsearch security https://www.elastic.co/blog/getting-started-with-elasticsearch-security.
 
+Expanded guide https://www.elastic.co/blog/configuring-ssl-tls-and-https-to-secure-elasticsearch-kibana-beats-and-logstash.
+
 Documentation for Elastic Stack security https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html.
 
 ### Hints
