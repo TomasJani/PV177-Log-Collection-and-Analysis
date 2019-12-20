@@ -75,7 +75,7 @@ Enable port 5601 in Openstack, `Network -> Security Groups -> <your-security-gro
 
 ### Spin it up
 
-See commented [Makefile](../Makefile) for the workflow. Then you only need to run `make`.
+See commented [Makefile](../elastic-stack/Makefile) for the workflow. Then you only need to run `make`.
 
 ### Using screens
 
