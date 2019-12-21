@@ -137,7 +137,7 @@ example.
 
 We followed this tutorial https://logz.io/blog/elasticsearch-cluster-tutorial/.
 
-Enable port `9300` for `tcp` (bouth ingress and egress) connections in OpenStack
+Enable port `9300` for `tcp` (both ingress and egress) connections in OpenStack
 in `Network -> Security Groups -> <your-security-group> -> Manage Rules -> Add rule`
 (see [Allow access to Kibana from remote section](#allow-access-to-kibana-from-remote))
 for more details.
