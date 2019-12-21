@@ -91,7 +91,7 @@ See commented [Makefile](../elastic-stack/Makefile) for the workflow. Then you
 only need to run `make` to spin the server part up (runs all targets), or e.g.
 `make startup-filebeat` to spin up only Filebeat on the host side.
 
-### Using screens
+#### Using screens
 
 Elastic Stack components (Elasticsearch, Logstash, Kibana, and possibly also
 Filebeat and Metricbeat) run in separate consoles (so-called screens) on the server.
@@ -107,6 +107,16 @@ Press "Ctrl-A" and "D" in the attached screen.
 
 Scrolling in the attached screen:
 Press "Ctrl-A" and "Esc" in the attached screen.
+
+#### Monitor network traffic in the cluster
+
+To see if there is some traffic between the Elastic Stack components and/or from
+host machines to the server, you can use `tcpdump` to show traffic to a specific
+port (e.g. 5601 for Kibana):
+
+```
+sudo tcpdump port 5601
+```
 
 ### Indexing Logs
 
