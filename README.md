@@ -190,6 +190,6 @@ To check if Elasticsearch is running, run `curl localhost:9200`.
 
 To check if Elasticsearch indexed sample data, run `curl -XGET 'localhost:9200/<logstash-index-name>/_search?pretty&q=geoip.city_name=Buffalo'`, where `<logstash-index-name>` could be found by running `curl 'localhost:9200/_cat/indices?v'`.
 
-Always terminate the instance in OpenStack (policies).
+Always terminate your instances in OpenStack (service policies) -- actually not strictly.
 
 Create a snapshot to persist the state of your VM.
